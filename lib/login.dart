@@ -58,10 +58,6 @@ class _loginState extends State<login> {
                       print("Password: $password");
                       print("Email: $email");
                   
-            //  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            //              password: password,
-            //              email: email,
-            //   );
               
                   await FirebaseAuth.instance.signInWithEmailAndPassword(
                          password: password,

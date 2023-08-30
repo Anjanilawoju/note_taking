@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:note_taking/addnote.dart';
 import 'package:note_taking/login.dart';
-import 'package:note_taking/signup.dart';
+import 'package:note_taking/update.dart';
 
-
+//main function
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -22,6 +22,7 @@ Future<void> main() async {
 final auth=FirebaseAuth.instance.currentUser;
   runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
+
     home: auth!=null?Home():login(),
   ));
 }
@@ -34,6 +35,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final _subject = TextEditingController();
   final _description = TextEditingController();
+  // data location reference
   var snapshotLocation =
       FirebaseFirestore.instance.collection("Note").snapshots();
   //featch and update
@@ -57,13 +59,13 @@ class _HomeState extends State<Home> {
         print(
             'Current Data - Document ID: $id, Title: ${data['title']}, Description: ${data['description']}');
 
-        // Update the data
+        // Update the data in database
         await documentRef.update({
           "title": mytitle,
           "description": description,
         });
 
-        // Fetch the updated data
+        // Fetch the updated data to show in ui
         DocumentSnapshot updatedSnapshot = await documentRef.get();
         Map<String, dynamic> updatedData =
             updatedSnapshot.data() as Map<String, dynamic>;
@@ -95,9 +97,9 @@ class _HomeState extends State<Home> {
             child: const Column(children: [
               CircleAvatar(
                   radius: 70,
-                  child:Icon(Icons.camera)),
-              Text("User"),
-              Text("user@gmail.com")
+                  child:Icon(Icons.person)),
+              Text("Anjali"),
+              Text("anjali@gmail.com")
             ]),
           ),
       
@@ -108,8 +110,10 @@ class _HomeState extends State<Home> {
             onTap: (
               () {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-                    return login();
-                                       }), (route) => false);
+                          return login();
+                                       }), 
+                                       
+                                       (route) => false);
               })
               
               ),
@@ -146,6 +150,8 @@ class _HomeState extends State<Home> {
                       child: Center(
                         child: Column(
                           children: [
+
+                            //input title
                             Container(
                               height: 100,
                               width: 300,
@@ -161,6 +167,8 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                             ),
+
+// input description
                             Container(
                               height: 100,
                               width: 500,
@@ -178,12 +186,16 @@ class _HomeState extends State<Home> {
                               child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
+
                                      String  mytitle = _subject.text;
                                        String description = _description.text;
 
 
                                       print(mytitle);
                                       fetchDocumentById(mytitle,description);
+
+                                      //update
+
                                       v1 = false;
                                     });
                                   },
@@ -194,6 +206,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   )
+                  
                 : Column(
                     children: [
                       StreamBuilder<QuerySnapshot>(
@@ -217,6 +230,8 @@ class _HomeState extends State<Home> {
                             // height: double.infinity,
                             height: 500,
 
+
+                      // read 
                             child: ListView.builder(
                               itemCount: querySnapshot.size,
                               itemBuilder: (context, int index) {
@@ -254,20 +269,13 @@ class _HomeState extends State<Home> {
 
                                                           String title=document.get("title");
                                                           String description=document.get("description");
+                                                          String id=document.id;
 
 
-                                                          fetchDocumentById(title,description);
-                                                          
+                                                          // fetchDocumentById(title,description);
+                                    Navigator.push(context,MaterialPageRoute(builder: (context) =>  Update(title,description,id)),  );
 
-
-
-
-
-
-
-
-
-
+                                                      
 
                                                           id = document.id;
                                                           v1 = true;

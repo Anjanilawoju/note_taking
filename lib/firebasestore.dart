@@ -20,7 +20,7 @@ class _MyWidgetState extends State<MyWidget> {
       body:
        Container(
         height: 400,
-        child: StreamBuilder<QuerySnapshot>(
+        child: StreamBuilder<QuerySnapshot>(  //future builder
           stream: snapshotLocation,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -52,10 +52,6 @@ class _MyWidgetState extends State<MyWidget> {
           },
         ),
       ),
-
-
-
-      
     );
   }
 }
